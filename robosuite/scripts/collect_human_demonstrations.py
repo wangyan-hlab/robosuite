@@ -157,6 +157,7 @@ def gather_demonstrations_as_hdf5(directory, out_dir, env_info):
             # write datasets for states and actions
             ep_data_grp.create_dataset("states", data=np.array(states))
             ep_data_grp.create_dataset("actions", data=np.array(actions))
+            print(f"{num_eps} demonstrations saved")
         else:
             print("Demonstration is unsuccessful and has NOT been saved")
 
@@ -192,6 +193,8 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="keyboard")
     parser.add_argument("--pos-sensitivity", type=float, default=1.0, help="How much to scale position user inputs")
     parser.add_argument("--rot-sensitivity", type=float, default=1.0, help="How much to scale rotation user inputs")
+    parser.add_argument("--gripper", type=str, default="PandaGripper", help="Which gripper to use in the env")
+    parser.add_argument("--dir", type=str, default="/home/yan/Documents/tmp/", help="Which directory to save the collected human demonstrations")
     args = parser.parse_args()
 
     # Get controller config
@@ -202,6 +205,7 @@ if __name__ == "__main__":
         "env_name": args.environment,
         "robots": args.robots,
         "controller_configs": controller_config,
+        "gripper_types": args.gripper,
     }
 
     # Check if we're using a multi-armed environment and use env_configuration argument if so
@@ -227,7 +231,8 @@ if __name__ == "__main__":
     env_info = json.dumps(config)
 
     # wrap the environment with data collection wrapper
-    tmp_directory = "/tmp/{}".format(str(time.time()).replace(".", "_"))
+    # tmp_directory = "/tmp/{}".format(str(time.time()).replace(".", "_"))
+    tmp_directory = args.dir + str(time.time()).replace(".", "_")
     env = DataCollectionWrapper(env, tmp_directory)
 
     # initialize device

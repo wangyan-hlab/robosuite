@@ -72,6 +72,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--environment", type=str, default="Door")
     parser.add_argument("--robots", nargs="+", type=str, default="Panda", help="Which robot(s) to use in the env")
+    parser.add_argument("--gripper", type=str, default="Robotiq85Gripper", help="Which gripper to use")
     parser.add_argument("--directory", type=str, default="/tmp/")
     parser.add_argument("--timesteps", type=int, default=1000)
     args = parser.parse_args()
@@ -85,6 +86,7 @@ if __name__ == "__main__":
         has_renderer=True,
         has_offscreen_renderer=False,
         control_freq=20,
+        gripper_types=args.gripper,
     )
     data_directory = args.directory
 

@@ -297,3 +297,83 @@ class DoorObject(MujocoXMLObject):
         dic = super().important_sites
         dic.update({"handle": self.naming_prefix + "handle"})
         return dic
+
+
+class ContainerObject(MujocoXMLObject):
+    """
+    Container with two holes on the top and the bottom surfaces
+    """
+
+    def __init__(self, name):
+        super().__init__(
+            xml_path_completion("objects/custom/container.xml"),
+            name=name,
+            joints=None,
+            obj_type="all",
+            duplicate_collision_geoms=True,
+        )
+
+
+class TwistLockObject(MujocoXMLObject):
+    """
+    A Twist-lock consisting of a casing and a lock + A Container (optional)
+
+    Args:
+        friction (3-tuple of float): friction parameters to override the ones specified in the XML
+        damping (float): damping parameter to override the ones specified in the XML
+        container (bool): if True, a container is added whose placement is uniformly random at the beginning of each sim loop
+    """
+
+    def __init__(self, name, friction=None, damping=None, container=False):
+        if container:
+            xml_path = "objects/custom/twist_lock_container.xml"
+        else:
+            xml_path = "objects/custom/twist_lock.xml"
+        super().__init__(
+            xml_path_completion(xml_path), name=name, joints=None, obj_type="all", duplicate_collision_geoms=True
+        )
+
+        # Set relevant body names
+        self.casing_body = self.naming_prefix + "casing"
+        self.lock_body = self.naming_prefix + "lock"
+        self.lock_joint = self.naming_prefix + "lock_joint"
+
+        self.friction = friction
+        self.damping = damping
+        if self.friction is not None:
+            self._set_lock_friction(self.friction)
+        if self.damping is not None:
+            self._set_lock_damping(self.damping)
+
+    def _set_lock_friction(self, friction):
+        """
+        Helper function to override the lock friction directly in the XML
+
+        Args:
+            friction (3-tuple of float): friction parameters to override the ones specified in the XML
+        """
+        lock_joint = find_elements(root=self.worldbody, tags="joint", attribs={"name": self.lock_joint}, return_first=True)
+        lock_joint.set("frictionloss", array_to_string(np.array([friction])))
+
+    def _set_lock_damping(self, damping):
+        """
+        Helper function to override the lock friction directly in the XML
+
+        Args:
+            damping (float): damping parameter to override the ones specified in the XML
+        """
+        lock_joint = find_elements(root=self.worldbody, tags="joint", attribs={"name": self.lock_joint}, return_first=True)
+        lock_joint.set("damping", array_to_string(np.array([damping])))
+
+    @property
+    def important_sites(self):
+        """
+        Returns:
+            dict: In addition to any default sites for this object, also provides the following entries
+
+                :`'handle'`: Name of lock handle location site
+        """
+        # Get dict from super call and add to it
+        dic = super().important_sites
+        dic.update({"handle": self.naming_prefix + "handle"})
+        return dic

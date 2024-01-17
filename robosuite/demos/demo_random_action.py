@@ -49,9 +49,10 @@ if __name__ == "__main__":
         ignore_done=True,
         use_camera_obs=False,
         control_freq=20,
+        gripper_types="WSGGripper"
     )
     env.reset()
-    env.viewer.set_camera(camera_id=0)
+    env.viewer.set_camera(camera_id=0) # ('frontview', 'birdview', 'agentview', 'sideview', 'robot0_robotview', 'robot0_eye_in_hand')
 
     # Get action limits
     low, high = env.action_spec

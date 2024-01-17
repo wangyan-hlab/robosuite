@@ -1,0 +1,30 @@
+<mujoco model="twist_lock">
+  <asset>
+    <mesh file="../meshes/custom/twist_lock_casing.stl" name="twist_lock_casing_mesh"/>
+    <mesh file="../meshes/custom/twist_lock_lock.stl" name="twist_lock_lock_mesh"/>
+    <texture file="../../textures/metal.png" type="cube" name="metal" />
+    <material name="MatMetal" texture="metal" specular="1" shininess="0.3" />
+  </asset>
+    <worldbody>
+      <body>
+        <body name="object">
+          <joint name="z_slide" type="slide" pos="0 0 0" axis="0 0 1" range="0 1" damping="0" frictionloss="0.1" limited="true"/>
+          <body name="casing">
+              <inertial pos="0 0 0" mass="1.0" diaginertia="1 1 0.001" />
+              <geom pos="0 0 0" mesh="twist_lock_casing_mesh" type="mesh" conaffinity="0" contype="0" group="1" material="MatMetal" name="casing_vis"/>
+              <geom pos="0 0 0" mesh="twist_lock_casing_mesh" type="mesh" solimp="0.998 0.998 0.001" solref="0.02 1" conaffinity="0" contype="1" density="100" friction="0.95 0.3 0.1" group="0" condim="4" name="casing_col"/>
+          </body>
+          <body name="lock" pos="0 0 0">
+              <inertial pos="0 0 0" mass="1.0" diaginertia="1 1 0.001" />
+              <joint name="lock_joint" pos="0 0 0" axis="0 0 1" range="0 1.57" damping="0" frictionloss="0.1" limited="true"/>
+              <geom pos="0 0 0" mesh="twist_lock_lock_mesh" type="mesh" conaffinity="0" contype="0" group="1" material="MatMetal" name="lock_vis"/>
+              <geom pos="0 0 0" mesh="twist_lock_lock_mesh" type="mesh" solimp="0.998 0.998 0.001" solref="0.02 1" conaffinity="0" contype="1" density="100" friction="0.95 0.3 0.1" group="0" condim="4" name="lock_col"/>
+              <site name="handle" pos="0.07 0.07 0" size="0.01 0.01 0.01" rgba="0 0 1 0" group="1" type="sphere" />
+          </body>
+        </body>
+        <site name="bottom_site" pos="0 0 0" rgba="0 0 0 0" size="0.005"/>
+        <site name="top_site" pos="0 0 0" rgba="0 0 0 0" size="0.005"/>
+        <site name="horizontal_radius_site" pos="0 0 0" rgba="0 0 0 0" size="0.1"/>
+      </body>
+    </worldbody>
+</mujoco>
