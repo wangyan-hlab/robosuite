@@ -29,8 +29,7 @@ class FR5(ManipulatorModel):
 
     @property
     def init_qpos(self):
-        # return np.array([-0.470, -1.735, 2.480, -2.275, -1.590, -1.991])
-        return np.array([-0.258, -1.867, 1.908, -1.593, -1.611, 1.321])
+        return np.array([-0.258, -1.867, 1.908, -1.593, -1.611, -1.819])
 
     @property
     def base_xpos_offset(self):

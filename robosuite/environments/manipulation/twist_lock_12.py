@@ -4,13 +4,13 @@ import numpy as np
 
 from robosuite.environments.manipulation.single_arm_env import SingleArmEnv
 from robosuite.models.arenas import TableArena
-from robosuite.models.objects import TwistLockObject
+from robosuite.models.objects import TwistLockObject12
 from robosuite.models.tasks import ManipulationTask
 from robosuite.utils.observables import Observable, sensor
 from robosuite.utils.placement_samplers import UniformRandomSampler, SequentialCompositeSampler
 
 
-class TwistLock(SingleArmEnv):
+class TwistLock12(SingleArmEnv):
     """
     This class corresponds to the twist lock unlocking task for a single robot arm.
 
@@ -174,7 +174,7 @@ class TwistLock(SingleArmEnv):
         self.twistlocks = []
 
         # initialize objects of interest
-        self.twistlock = TwistLockObject(
+        self.twistlock = TwistLockObject12(
             name="TwistLock",
             friction=1.0,
             damping=0.1,
@@ -195,7 +195,7 @@ class TwistLock(SingleArmEnv):
                     ensure_object_boundary_in_range=False,
                     ensure_valid_placement=True,
                     reference_pos=self.table_offset,
-                    z_offset=0.075,
+                    z_offset=0.15,
                 )
             )
         # Reset sampler before adding any new samplers / objects
@@ -319,12 +319,11 @@ class TwistLock(SingleArmEnv):
         Returns:
             bool: True if lock has been opened and lifted
         """
-        lockjoint_qpos = self.sim.data.qpos[self.lockjoint_qpos_addr]
-        lock_height = self.sim.data.body_xpos[self.object_body_ids["twistlock_lock"]][2]
-        table_height = self.model.mujoco_arena.table_offset[2]
-
         # lock is opened and higher than the table top above a margin
-        return lockjoint_qpos > 1.48 and lock_height > table_height + 0.2
+        unlock_check = self._check_unlock()
+        lift_check = self._check_lift()
+        metrics = self._get_partial_task_metrics()
+        return metrics["task"]
 
     def _check_lock_is_grasped(self):
         """
@@ -337,16 +336,16 @@ class TwistLock(SingleArmEnv):
 
     def _check_unlock(self):
         # lock should be unlocked (angle should be more than 85 degrees)
-        lockjoint_tolerance = 85. * np.pi / 180.
+        lockjoint_tolerance = -85. * np.pi / 180.
         lockjoint_angle = self.sim.data.qpos[self.lockjoint_qpos_addr]
-        lock_check = (lockjoint_angle > lockjoint_tolerance)
+        lock_check = (lockjoint_angle < lockjoint_tolerance)
         return lock_check
 
     def _check_lift(self):
         """
         check if lock is lifted by robot
         """
-        height_tolerance = 0.2
+        height_tolerance = 0.15
         lock_height = self.sim.data.body_xpos[self.object_body_ids["twistlock_lock"]][2]
         table_height = self.model.mujoco_arena.table_offset[2]
         lift_check = ((lock_height - table_height) > height_tolerance)
@@ -355,10 +354,10 @@ class TwistLock(SingleArmEnv):
     def _get_partial_task_metrics(self):
         metrics = dict()
 
-        lock_check = self._check_unlock()
+        unlock_check = self._check_unlock()
         lift_check = self._check_lift()
 
-        metrics["task"] = lock_check and lift_check
+        metrics["task"] = unlock_check and lift_check
         metrics["grasp"] = self._check_lock_is_grasped()
 
         return metrics

@@ -1,0 +1,48 @@
+<mujoco model="twist_lock">
+  <asset>
+    <mesh file="../meshes/custom/block1_12.stl" name="twist_lock_casing_mesh_1"/>
+    <mesh file="../meshes/custom/block2_12.stl" name="twist_lock_casing_mesh_2"/>
+    <mesh file="../meshes/custom/twistlock_12.stl" name="twist_lock_lock_mesh"/>
+    <texture file="../../textures/metal.png" type="cube" name="metal" />
+    <material name="MatMetal" texture="metal" specular="1" shininess="0.3" />
+    <mesh file="../meshes/custom/container_12.stl" name="container_mesh"/>
+    <texture file="../../textures/bread.png" type="cube" name="breadmetal" />
+    <material name="BreadMetal" texture="breadmetal" specular="1" shininess="0.3" />
+  </asset>
+    <worldbody>
+      <body>
+        <body name="object">
+          <!-- container -->
+          <body name="container">
+            <geom pos="0 0 0" mesh="container_mesh" type="mesh" conaffinity="0" contype="0" material="BreadMetal" group="1" name="container_vis"/>
+            <geom pos="0 0 0" mesh="container_mesh" type="mesh" conaffinity="0" contype="1" material="BreadMetal" group="0" name="container_col"/>
+            <!-- <geom pos="0.06875 0 0.0625" type="box" size="0.031 0.1 0.01" conaffinity="0" contype="1" group="0" rgba="1 1 0 1" name="container_col_toplft"/>
+            <geom pos="-0.06875 0 0.0625" type="box" size="0.031 0.1 0.01" conaffinity="0" contype="1" group="0" rgba="1 1 0 1" name="container_col_toprgt"/> -->
+            <!-- <geom pos="0 0.0675 -0.01" type="box" size="0.015 0.015 0.02" conaffinity="0" contype="1" group="0" rgba="1 1 0 1" name="container_col_topfront"/>
+            <geom pos="0 -0.0825 -0.01" type="box" size="0.015 0.045 0.02" conaffinity="0" contype="1" group="0" rgba="1 1 0 1" name="container_col_topback"/> -->
+          </body>
+          <!-- twist_lock -->
+          <body name="twistlock" pos="0 0 0">
+            <joint name="z_slide" type="slide" pos="0 0 0" axis="0 0 1" range="0 1" damping="0" frictionloss="0.1" limited="true"/>
+            <body name="casing">
+                <inertial pos="0 0 0" mass="1.0" diaginertia="1 1 0.001" />
+                <geom pos="0 0 0" mesh="twist_lock_casing_mesh_1" type="mesh" conaffinity="0" contype="0" group="1" material="MatMetal" name="casing_1_vis"/>
+                <geom pos="0 0 0" mesh="twist_lock_casing_mesh_1" type="mesh" solimp="0.998 0.998 0.001" solref="0.02 1" conaffinity="0" contype="1" density="100" friction="0.95 0.3 0.1" group="0" condim="4" name="casing_1_col"/>
+                <geom pos="0 0 0" mesh="twist_lock_casing_mesh_2" type="mesh" conaffinity="0" contype="0" group="1" material="MatMetal" name="casing_2_vis"/>
+                <geom pos="0 0 0" mesh="twist_lock_casing_mesh_2" type="mesh" solimp="0.998 0.998 0.001" solref="0.02 1" conaffinity="0" contype="1" density="100" friction="0.95 0.3 0.1" group="0" condim="4" name="casing_2_col"/>
+            </body>
+            <body name="lock" pos="0 0 0">
+                <inertial pos="0 0 0" mass="1.0" diaginertia="1 1 0.001" />
+                <joint name="lock_joint" pos="0 0 0" axis="0 0 1" range="-1.57 0" damping="0" frictionloss="0.1" limited="true"/>
+                <geom pos="0 0 0" mesh="twist_lock_lock_mesh" type="mesh" conaffinity="0" contype="0" group="1" material="MatMetal" name="lock_vis"/>
+                <geom pos="0 0 0" mesh="twist_lock_lock_mesh" type="mesh" solimp="0.998 0.998 0.001" solref="0.02 1" conaffinity="0" contype="1" density="100" friction="0.95 0.3 0.1" group="0" condim="4" name="lock_col"/>
+                <site name="handle" pos="0 0 0.1" size="0.01 0.01 0.01" rgba="0 0 1 1" group="1" type="sphere" />
+            </body>
+          </body>
+        </body>
+        <site name="bottom_site" pos="0 0 0" rgba="0 0 0 0" size="0.005"/>
+        <site name="top_site" pos="0 0 0" rgba="0 0 0 0" size="0.005"/>
+        <site name="horizontal_radius_site" pos="0 0 0" rgba="0 0 0 0" size="0.1"/>
+      </body>
+    </worldbody>
+</mujoco>

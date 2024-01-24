@@ -18,6 +18,7 @@ from .xml_objects import (
     PlateWithHoleObject,
     DoorObject,
     TwistLockObject,
+    TwistLockObject12,
 )
 from .primitive import *
 from .composite import *
