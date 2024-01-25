@@ -31,7 +31,6 @@
                 <inertial pos="0 0 0" mass="1.0" diaginertia="1 1 0.001" />
                 <joint name="lock_joint" pos="0 0 0" axis="0 0 1" range="0 1.57" damping="0" frictionloss="0.1" limited="true"/>
                 <geom pos="0 0 0" mesh="twist_lock_lock_mesh" type="mesh" conaffinity="0" contype="0" group="1" material="MatMetal" name="lock_vis"/>
-                <geom pos="0 0 0.05" size="0.04 0.03 0.04" type="box" rgba="1 0 0 0.3" solimp="0.998 0.998 0.001" solref="0.02 1" friction="0.95 0.3 0.1" group="0" condim="4" name="box_col" />
                 <geom pos="0 0 0" mesh="twist_lock_lock_mesh" type="mesh" solimp="0.998 0.998 0.001" solref="0.02 1" conaffinity="0" contype="1" density="100" friction="0.95 0.3 0.1" group="0" condim="4" name="lock_col"/>
                 <!-- <site name="handle" pos="0.07 0.07 0" size="0.01 0.01 0.01" rgba="0 0 1 1" group="1" type="sphere" /> -->
                 <site name="handle" pos="0 0 0.07" size="0.01 0.01 0.01" rgba="0 0 1 1" group="1" type="sphere" />

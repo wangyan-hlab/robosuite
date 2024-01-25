@@ -320,9 +320,8 @@ class TwistLock12(SingleArmEnv):
             bool: True if lock has been opened and lifted
         """
         # lock is opened and higher than the table top above a margin
-        unlock_check = self._check_unlock()
-        lift_check = self._check_lift()
         metrics = self._get_partial_task_metrics()
+        print(metrics['grasp'], metrics['unlock'], metrics['task'])
         return metrics["task"]
 
     def _check_lock_is_grasped(self):
@@ -354,11 +353,13 @@ class TwistLock12(SingleArmEnv):
     def _get_partial_task_metrics(self):
         metrics = dict()
 
+        grasp_check = self._check_lock_is_grasped()
         unlock_check = self._check_unlock()
         lift_check = self._check_lift()
 
-        metrics["task"] = unlock_check and lift_check
-        metrics["grasp"] = self._check_lock_is_grasped()
+        metrics["grasp"] = grasp_check
+        metrics["unlock"] = grasp_check and unlock_check
+        metrics["task"] = grasp_check and unlock_check and lift_check
 
         return metrics
 
